@@ -9,7 +9,7 @@ Retrieval-Augmented Generation (RAG).
 
 ---
 
-## ✨ Features
+##  Features
 
 - **OTP authentication** — phone (Twilio) and email (SendGrid) one-time-password login.
 - **Catalog** — hierarchical Board → Class → Subject structure with admin management.
@@ -21,7 +21,7 @@ Retrieval-Augmented Generation (RAG).
   subject documents.
 - **Admin panel** — manage boards, classes, subjects, and users.
 
-## 🧱 Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -35,7 +35,7 @@ Retrieval-Augmented Generation (RAG).
 | **Frontend** | React 18, Vite, TypeScript, Tailwind CSS, shadcn/ui, React Query |
 | **Infra** | Docker, docker-compose |
 
-## 🗺️ Architecture
+##  Architecture
 
 ```
                  ┌─────────────────┐        ┌─────────────────┐
@@ -65,7 +65,7 @@ Retrieval-Augmented Generation (RAG).
                      └──────────────────┘
 ```
 
-## 📦 Repository structure
+##  Repository structure
 
 ```
 student_lms/
@@ -76,7 +76,7 @@ student_lms/
 
 ---
 
-## 🚀 Run locally
+##  Run locally
 
 ### Prerequisites
 - [Docker](https://www.docker.com/) (Docker Desktop)
@@ -114,7 +114,7 @@ npm run dev -- --port 8081    # http://localhost:8081
 
 ---
 
-## ☁️ Deployment
+##  Deployment
 
 The project is designed to deploy on free/low-cost tiers:
 
@@ -129,11 +129,11 @@ and point the frontends' `VITE_API_BASE_URL` at the deployed API URL.
 
 ---
 
-## 🔐 Security note
+##  Security note
 
 All secrets live in `.env` files, which are git-ignored. Use `.env.example` as the
 template and provide real values via your own environment / hosting dashboard.
 
-## 📄 License
+##  License
 
 MIT © Prakash Kumar
