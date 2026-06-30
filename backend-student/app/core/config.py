@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -12,6 +12,19 @@ class Settings(BaseSettings):
 
     # ================== DATABASE ==================
     database_url: str = Field(..., alias="DATABASE_URL")
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_db_url(cls, v: str) -> str:
+        # Hosts like Render/Neon give a "postgres://" or "postgresql://" URL,
+        # but this app uses the psycopg3 driver. Normalize to "postgresql+psycopg://".
+        if v.startswith("postgresql+"):
+            return v
+        if v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+psycopg://", 1)
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+psycopg://", 1)
+        return v
     db_pool_size: int = Field(default=5, alias="DB_POOL_SIZE")
     db_max_overflow: int = Field(default=5, alias="DB_MAX_OVERFLOW")
     db_pool_timeout: int = Field(default=30, alias="DB_POOL_TIMEOUT")

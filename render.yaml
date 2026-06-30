@@ -1,0 +1,68 @@
+# Render Blueprint — deploys the backend stack (Postgres + Redis + API + worker).
+# In Render: New → Blueprint → connect this repo → Apply.
+# Then set the secret values marked "sync: false" in the dashboard (OpenAI key, admin login, CORS).
+
+databases:
+  - name: student-lms-db
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  # ---------- Redis (queue/cache) ----------
+  - type: redis
+    name: student-lms-redis
+    plan: free
+    ipAllowList: []   # internal only
+
+  # ---------- FastAPI backend ----------
+  - type: web
+    name: student-lms-api
+    runtime: docker
+    rootDir: backend-student
+    dockerfilePath: ./Dockerfile
+    dockerCommand: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: student-lms-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: student-lms-redis
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true        # Render generates a strong random secret
+      - key: OPENAI_API_KEY
+        sync: false                # paste your NEW OpenAI key in the dashboard
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false                # paste your Vercel frontend URL here after it deploys
+      - key: ALLOW_ADMIN_READONLY
+        value: "true"
+
+  # ---------- Celery ingestion worker ----------
+  - type: worker
+    name: student-lms-worker
+    runtime: docker
+    rootDir: backend-student
+    dockerfilePath: ./Dockerfile
+    dockerCommand: celery -A worker.celery_app.celery_app worker --loglevel=INFO --queues=ingestion
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: student-lms-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: student-lms-redis
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
