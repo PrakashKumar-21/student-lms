@@ -1,0 +1,43 @@
+# ===== Secrets — NEVER commit =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ===== Python / backend =====
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ===== Node / frontend =====
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+
+# ===== Uploads / runtime data =====
+backend-student/uploads/
+uploads/
+
+# ===== Logs =====
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# ===== Editor / OS =====
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.sln
+*.sw?
